@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:test/screens/login_page.dart';
 import 'package:test/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final firebase = FirebaseAuth.instance;
 
@@ -34,6 +36,14 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => MainScreen(),
       ));
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('${usercred.user!.email}')
+          .set({
+        'email': enteredemail,
+        'password': enteredpassword,
+        'username': enteredname
+      });
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
